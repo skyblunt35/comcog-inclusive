@@ -160,7 +160,6 @@ html.js.ready .hero__cta .btn:nth-child(2){animation-delay:.85s}
 .portrait__frame img{width:100%;height:100%;object-fit:cover;display:block}
 .portrait__ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px}
 .portrait__note{font-family:"PT Sans Narrow",sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--teal-deep)}
-.portrait__cap{position:relative;z-index:2;margin-top:40px;font-size:13px;color:var(--ink-mute)}
 .values__label{margin-top:88px}
 .values{border-top:1px solid var(--rule)}
 .value{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:6px 40px;padding:18px 0;border-bottom:1px solid var(--rule);align-items:baseline}
@@ -236,7 +235,7 @@ html[data-motion="calm"] .node{border-color:var(--orange);background:var(--orang
   .col+.col{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
   .col:nth-child(2),.col:nth-child(3){padding-top:24px}
   .about,.contact,.scope{grid-template-columns:1fr;gap:40px}
-  .portrait{max-width:320px}
+  .portrait{max-width:320px;margin-bottom:22px}
   .portrait__panel{inset:22px -10px -22px 22px}
   .line{grid-template-columns:1fr;gap:4px}
   .value{grid-template-columns:1fr;gap:3px}
