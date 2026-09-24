@@ -110,16 +110,15 @@ html.js.ready .hero__cta .btn:nth-child(2){animation-delay:.85s}
 .s-constat{padding-block:96px 104px}
 .constat{font-family:"PT Sans Narrow",sans-serif;font-size:clamp(28px,3.8vw,42px);line-height:1.18;color:var(--ink);max-width:22ch;margin-bottom:34px}
 .mission{border-left:3px solid var(--orange);padding-left:26px;max-width:58ch;margin-top:8px}
+.mission p.label{font-size:13px;line-height:1.4;color:var(--orange-ink);margin-bottom:12px}
 .mission p{font-size:18.5px;line-height:1.58;color:var(--ink)}
 .mission strong{color:var(--teal-deep)}
 
-/* ---------- accompagnements : trois colonnes sans boîte, en escalier ---------- */
+/* ---------- accompagnements : trois colonnes sans boîte, alignées (escalier retiré à la demande de Thomas, 21 septembre 2026) ---------- */
 .s-accomp{padding-block:40px 120px}
 .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:44px}
 .col{padding:8px 30px 0 0;display:flex;flex-direction:column;gap:14px}
 .col+.col{padding-left:30px;border-left:1px solid var(--rule)}
-.col:nth-child(2){padding-top:40px}
-.col:nth-child(3){padding-top:72px}
 .col h3{font-size:30px;color:var(--ink);position:relative;padding-bottom:12px}
 .col h3::after{content:"";position:absolute;left:0;bottom:0;width:36px;height:3px;background:var(--orange);transition:width .4s var(--ease-out)}
 .col:hover h3::after{width:100%}
@@ -165,21 +164,9 @@ html.js.ready .hero__cta .btn:nth-child(2){animation-delay:.85s}
 .value{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:6px 40px;padding:18px 0;border-bottom:1px solid var(--rule);align-items:baseline}
 .value b{font-size:16.5px;color:var(--ink)}
 .value p{font-size:15px;color:var(--ink-soft)}
+.values--creds .value{grid-template-columns:minmax(0,440px) minmax(0,1fr)}
+.values--creds+.values__label{margin-top:64px}
 
-/* ---------- périmètre ---------- */
-.s-perimetre{padding-block:40px 128px}
-.scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;margin-top:40px}
-.scope__col{display:flex;flex-direction:column;gap:16px}
-.scope__head{font-family:"PT Sans Narrow",sans-serif;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding-bottom:12px;border-bottom:2px solid var(--teal);color:var(--teal-deep)}
-.scope__col--out .scope__head{border-bottom-color:var(--rule-firm);color:var(--ink-mute)}
-.scope ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px}
-.scope li{font-size:15.5px;color:var(--ink-soft);padding-left:18px;position:relative}
-.scope li::before{content:"";position:absolute;left:0;top:.7em;width:6px;height:6px;border-radius:50%;background:var(--teal)}
-.scope__note{font-size:15px;color:var(--ink-soft);line-height:1.6}
-.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px 36px;margin-top:56px;padding-top:30px;border-top:1px solid var(--rule)}
-.gloss div{display:flex;flex-direction:column;gap:4px}
-.gloss b{font-family:"PT Sans Narrow",sans-serif;font-size:17px;font-weight:700;color:var(--ink)}
-.gloss p{font-size:13.5px;color:var(--ink-mute);line-height:1.55}
 .track__end{position:absolute;z-index:2;left:calc(50% - 480px - 9px);bottom:-10px;width:20px;height:20px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 6px #fff}
 
 /* ---------- contact : bande teal ---------- */
@@ -234,11 +221,11 @@ html[data-motion="calm"] .node{border-color:var(--orange);background:var(--orang
   .col{padding-right:0}
   .col+.col{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
   .col:nth-child(2),.col:nth-child(3){padding-top:24px}
-  .about,.contact,.scope{grid-template-columns:1fr;gap:40px}
+  .about,.contact{grid-template-columns:1fr;gap:40px}
   .portrait{max-width:320px;margin-bottom:22px}
   .portrait__panel{inset:22px -10px -22px 22px}
   .line{grid-template-columns:1fr;gap:4px}
-  .value{grid-template-columns:1fr;gap:3px}
+  .value,.values--creds .value{grid-template-columns:1fr;gap:3px}
   .step__row{grid-template-columns:44px 1fr;gap:6px 18px}
   .step__goal{grid-column:2}
   .nav__links{display:none}
@@ -250,7 +237,7 @@ html[data-motion="calm"] .node{border-color:var(--orange);background:var(--orang
   .nav>.btn{display:none}
   .hero{padding-block:56px 64px}
   .s-constat,.s-deroule,.s-parcours,.s-contact{padding-block:64px}
-  .s-accomp,.s-lignes,.s-perimetre{padding-block:24px 72px}
+  .s-accomp,.s-lignes{padding-block:24px 72px}
   .foot__inner{grid-template-columns:1fr}
   .foot__legal{flex-direction:column;align-items:flex-start}
 }
@@ -316,3 +303,14 @@ html:not(.js) .motion-toggle,html:not(.js) .lang{display:none}
   .hero,.s-contact,.s-deroule{background:#fff !important;color:#000}
   .hero *,.s-contact *{color:#000 !important}
 }
+
+/* Le nœud qui se desserre : la place est réservée par l'aspect-ratio du viewBox (1100 x 260),
+   donc aucun saut de mise en page, avec ou sans script. */
+.fils-noeud { display: block; width: 100%; height: auto; aspect-ratio: 1100 / 260; overflow: hidden; margin: 0 0 24px; }
+/* Téléphone (point de rupture du site : 620 px) : cadre plus haut, recadré au centre sur le nœud
+   (preserveAspectRatio="xMidYMid slice" sur le SVG) ; les traits gardent leur épaisseur (non-scaling-stroke). */
+@media (max-width: 620px) { .fils-noeud { aspect-ratio: 340 / 240; margin-bottom: 20px; } }
+/* Aucune animation CSS : l'état démêlé est celui inscrit dans le balisage. Ces deux règles garantissent
+   qu'aucun style hérité du site ne fera bouger les fils en mouvement réduit ou en mode calme. */
+@media (prefers-reduced-motion: reduce) { .fils-noeud, .fils-noeud path { animation: none !important; transition: none !important; } }
+html[data-motion="calm"] .fils-noeud, html[data-motion="calm"] .fils-noeud path { animation: none !important; transition: none !important; }

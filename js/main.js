@@ -122,3 +122,79 @@
   hero.addEventListener('mouseenter', function () { paused = true; });
   hero.addEventListener('mouseleave', function () { paused = false; });
 })();
+
+(function () {
+  /* Le nœud qui se desserre. La progression (0 emmêlé, 1 démêlé) est une fonction pure de la position
+     de l'illustration dans la fenêtre. Chaque fil porte trois états : data-d0 (emmêlé), data-d1 (boucles
+     resserrées à un point, le reste à mi-chemin) et d (démêlé). Sans script, en mouvement réduit ou en
+     mode calme, l'état démêlé du balisage reste tel quel. */
+  var svg = document.getElementById('fils-noeud');
+  if (!svg) return;
+  var SEUIL = 0.55; /* progression où les boucles ont disparu (état data-d1) ; même valeur dans le générateur */
+  var fils = [], els = svg.querySelectorAll('path[data-d0]'), i, a, m, b;
+  function nombres(s) { return s.match(/-?\d*\.?\d+/g).map(Number); }
+  for (i = 0; i < els.length; i++) {
+    a = nombres(els[i].getAttribute('data-d0')); b = nombres(els[i].getAttribute('d'));
+    m = els[i].getAttribute('data-d1'); m = m === null ? null : nombres(m);
+    if (a.length !== b.length || (m && m.length !== b.length)) return; /* balisage altéré : on laisse l'état démêlé */
+    fils.push({ el: els[i], a: a, m: m, b: b });
+  }
+  var dessine = -1;
+  function rendre(g) {
+    if (g === dessine) return;
+    dessine = g;
+    /* Rythme quadratique par étape, continu en vitesse au seuil : les boucles restent rondes puis s'effacent vite. */
+    var u, tA, tB, e, k, j, fil, de, vers, t, v;
+    if (g < SEUIL) { u = g / SEUIL; tA = u * u; tB = 0; e = SEUIL * tA; }
+    else { u = (g - SEUIL) / (1 - SEUIL); tA = 1; tB = 1 - (1 - u) * (1 - u); e = SEUIL + (1 - SEUIL) * tB; }
+    for (k = 0; k < fils.length; k++) {
+      fil = fils[k];
+      if (!fil.m) { de = fil.a; vers = fil.b; t = e; }
+      else if (g < SEUIL) { de = fil.a; vers = fil.m; t = tA; }
+      else { de = fil.m; vers = fil.b; t = tB; }
+      v = [];
+      for (j = 0; j < de.length; j++) v.push(Math.round((de[j] + (vers[j] - de[j]) * t) * 10) / 10);
+      fil.el.setAttribute('d', 'M' + v[0] + ' ' + v[1] + 'C' + v.slice(2).join(' '));
+    }
+  }
+  var force = svg.getAttribute('data-p'); if (force !== null) { rendre(Math.min(1, Math.max(0, +force))); return; } /* tests */
+
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function calme() { return mq.matches || document.documentElement.getAttribute('data-motion') === 'calm'; }
+  /* 0 tant que l'illustration n'est pas entrée par le bas (ou en haut de page si elle y est déjà visible),
+     1 quand son bord haut atteint 15 % de la hauteur de la fenêtre. Réversible. */
+  function progression() {
+    var y = window.pageYOffset, vh = window.innerHeight, haut = svg.getBoundingClientRect().top + y;
+    var debut = Math.max(0, haut - vh), fin = Math.max(debut + 1, haut - vh * 0.15), p = (y - debut) / (fin - debut);
+    return p < 0 ? 0 : p > 1 ? 1 : p;
+  }
+  var actuel = 1, cible = 1, prevu = false, enCalme = null;
+  function cadre() {
+    prevu = false;
+    if (enCalme) return;
+    cible = progression();
+    var d = cible - actuel;
+    if (Math.abs(d) < 0.002) actuel = cible; else actuel += d * 0.14; /* lissage ; arrêt net, aucun cadre au repos */
+    rendre(actuel);
+    if (actuel !== cible) demander();
+  }
+  function demander() { if (!prevu) { prevu = true; window.requestAnimationFrame(cadre); } }
+  function ecouter(oui) {
+    var f = oui ? 'addEventListener' : 'removeEventListener';
+    window[f]('scroll', demander, { passive: true });
+    window[f]('resize', demander, { passive: true });
+  }
+  /* Mode calme : état démêlé fixe, plus d'écouteurs. Retour : recalage instantané, sans transition. */
+  function bascule() {
+    var c = calme();
+    if (c === enCalme) return;
+    enCalme = c;
+    ecouter(!c);
+    actuel = cible = c ? 1 : progression();
+    rendre(actuel);
+  }
+  document.addEventListener('comcog:motion', bascule);
+  if (mq.addEventListener) mq.addEventListener('change', bascule); else if (mq.addListener) mq.addListener(bascule);
+  window.addEventListener('load', demander); /* la mise en page peut bouger après le chargement des polices */
+  bascule();
+})();
